@@ -10,6 +10,7 @@
             --text-color: #333;
             --panel-bg: #fff;
             --border-color: #ddd;
+            --primary-color: #0066ff;
         }
 
         * {
@@ -58,25 +59,60 @@
             font-weight: bold;
         }
 
-        input[type="file"] {
+        input[type="file"], input[type="text"] {
             font-size: 0.9rem;
         }
 
-        select {
+        select, input[type="text"] {
             padding: 8px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
             font-size: 1rem;
-            min-width: 150px;
         }
 
-        /* Preview Section */
+        /* Tabs Section */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* Previews Section (Presets) */
         .previews-container {
             display: flex;
             flex-wrap: wrap;
             gap: 30px;
             justify-content: center;
             align-items: flex-end;
+            width: 100%;
         }
 
         .device-wrapper {
@@ -91,35 +127,37 @@
             color: #555;
         }
 
-        /* Device Screens */
+        /* Screens Base Styles */
         .screen {
-            background-color: #e0e0e0; /* Placeholder color */
+            background-color: #e0e0e0;
             border: 8px solid #333;
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            /* Background properties will be injected here via JS */
             background-image: none;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease; /* Only transition background, not dimensions */
         }
 
-        /* Scaled down dimensions to fit on a standard monitor */
-        .desktop {
-            width: 800px;
-            height: 450px; /* 16:9 aspect ratio */
-            border-width: 12px;
-            border-radius: 16px;
+        .desktop { width: 800px; height: 450px; border-width: 12px; border-radius: 16px; }
+        .tablet { width: 384px; height: 512px; }
+        .phone { width: 250px; height: 500px; border-width: 12px; border-radius: 24px; }
+
+        /* Custom Screen Styles */
+        .custom-dimension-controls {
+            display: flex;
+            gap: 15px;
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .tablet {
-            width: 384px; /* iPad portrait scaled down */
-            height: 512px;
-        }
-
-        .phone {
-            width: 250px; /* iPhone scaled down */
-            height: 500px;
-            border-width: 12px;
-            border-radius: 24px;
+        .custom-screen {
+            width: 600px;
+            height: 400px;
+            max-width: 100%; /* Prevent it from breaking the window */
+            resize: both; /* Native drag-to-resize handle */
+            overflow: hidden; /* Required for 'resize' to work */
+            border-radius: 8px;
         }
 
         /* Helper text for empty state */
@@ -141,6 +179,7 @@
 
     <h1>🖼️ Will it be rendered poorly?</h1>
 
+    <!-- Global Controls -->
     <div class="controls">
         <div class="control-group">
             <label for="image-upload">Upload Image:</label>
@@ -181,64 +220,82 @@
         </div>
     </div>
 
-    <div class="previews-container">
-        <!-- Desktop -->
-        <div class="device-wrapper">
-            <div class="device-label">Desktop (16:9)</div>
-            <div class="screen desktop" id="screen-desktop">
-                <div class="empty-text">No Image</div>
+    <!-- Tab Navigation -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="presets">Standard Presets</button>
+        <button class="tab-btn" data-tab="custom">Custom Canvas</button>
+    </div>
+
+    <!-- TAB 1: Standard Presets -->
+    <div id="tab-presets" class="tab-content active">
+        <div class="previews-container">
+            <div class="device-wrapper">
+                <div class="device-label">Desktop (16:9)</div>
+                <div class="screen desktop" id="screen-desktop">
+                    <div class="empty-text">No Image</div>
+                </div>
+            </div>
+            <div class="device-wrapper">
+                <div class="device-label">Tablet Portrait</div>
+                <div class="screen tablet" id="screen-tablet">
+                    <div class="empty-text">No Image</div>
+                </div>
+            </div>
+            <div class="device-wrapper">
+                <div class="device-label">Phone</div>
+                <div class="screen phone" id="screen-phone">
+                    <div class="empty-text">No Image</div>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Tablet -->
-        <div class="device-wrapper">
-            <div class="device-label">Tablet Portrait</div>
-            <div class="screen tablet" id="screen-tablet">
-                <div class="empty-text">No Image</div>
+    <!-- TAB 2: Custom Canvas -->
+    <div id="tab-custom" class="tab-content">
+        <div class="custom-dimension-controls">
+            <div class="control-group">
+                <label for="custom-w">Width (px, vw, %):</label>
+                <input type="text" id="custom-w" value="600px">
+            </div>
+            <div class="control-group">
+                <label for="custom-h">Height (px, vh, %):</label>
+                <input type="text" id="custom-h" value="400px">
             </div>
         </div>
-
-        <!-- Phone -->
+        
         <div class="device-wrapper">
-            <div class="device-label">Phone</div>
-            <div class="screen phone" id="screen-phone">
+            <div class="device-label">Drag the bottom right corner to resize!</div>
+            <div class="screen custom-screen" id="screen-custom">
                 <div class="empty-text">No Image</div>
             </div>
         </div>
     </div>
 
     <script>
-        // DOM Elements
+        // --- 1. Global Background Settings ---
         const fileInput = document.getElementById('image-upload');
         const sizeSelect = document.getElementById('bg-size');
         const posSelect = document.getElementById('bg-position');
         const repeatSelect = document.getElementById('bg-repeat');
-        const screens = document.querySelectorAll('.screen');
+        const screens = document.querySelectorAll('.screen'); // Captures presets AND custom screen
 
         let currentImageUrl = '';
 
-        // Handle Image Upload
         fileInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
-                // Use FileReader to create a local URL for the uploaded image
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     currentImageUrl = `url(${e.target.result})`;
-                    
-                    // Remove empty state text
                     screens.forEach(screen => screen.classList.add('has-image'));
-                    
                     applyStyles();
                 }
                 reader.readAsDataURL(file);
             }
         });
 
-        // Function to apply CSS background properties to all screens
         function applyStyles() {
             if (!currentImageUrl) return;
-
             const size = sizeSelect.value;
             const position = posSelect.value;
             const repeat = repeatSelect.value;
@@ -251,10 +308,62 @@
             });
         }
 
-        // Listen for changes on all select dropdowns
         sizeSelect.addEventListener('change', applyStyles);
         posSelect.addEventListener('change', applyStyles);
         repeatSelect.addEventListener('change', applyStyles);
+
+
+        // --- 2. Tab Switching Logic ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked button and target content
+                btn.classList.add('active');
+                const targetId = `tab-${btn.dataset.tab}`;
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+
+        // --- 3. Custom Canvas Sizing Logic ---
+        const customWInput = document.getElementById('custom-w');
+        const customHInput = document.getElementById('custom-h');
+        const customScreen = document.getElementById('screen-custom');
+
+        // Apply typing changes to the div
+        function updateCustomDivSize() {
+            customScreen.style.width = customWInput.value;
+            customScreen.style.height = customHInput.value;
+        }
+
+        customWInput.addEventListener('input', updateCustomDivSize);
+        customHInput.addEventListener('input', updateCustomDivSize);
+
+        // Apply drag-resize changes back to the text inputs using ResizeObserver
+        const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+                // Prevent a loop where typing triggers this observer and overwrites what the user is typing
+                if (document.activeElement === customWInput || document.activeElement === customHInput) {
+                    return; 
+                }
+
+                // If the user drags the corner, update the inputs with the exact pixel values
+                const newWidth = entry.target.offsetWidth + 'px';
+                const newHeight = entry.target.offsetHeight + 'px';
+
+                if (customWInput.value !== newWidth) customWInput.value = newWidth;
+                if (customHInput.value !== newHeight) customHInput.value = newHeight;
+            }
+        });
+
+        // Start watching the custom screen for resize events
+        resizeObserver.observe(customScreen);
     </script>
 </body>
 </html>
