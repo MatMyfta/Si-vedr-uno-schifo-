@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will it be rendered poorly?</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --panel-bg: #fff;
+            --border-color: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* Controls Section */
+        .controls {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            font-size: 0.9rem;
+        }
+
+        select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            min-width: 150px;
+        }
+
+        /* Preview Section */
+        .previews-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .device-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Device Screens */
+        .screen {
+            background-color: #e0e0e0; /* Placeholder color */
+            border: 8px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            /* Background properties will be injected here via JS */
+            background-image: none;
+            transition: all 0.3s ease;
+        }
+
+        /* Scaled down dimensions to fit on a standard monitor */
+        .desktop {
+            width: 800px;
+            height: 450px; /* 16:9 aspect ratio */
+            border-width: 12px;
+            border-radius: 16px;
+        }
+
+        .tablet {
+            width: 384px; /* iPad portrait scaled down */
+            height: 512px;
+        }
+
+        .phone {
+            width: 250px; /* iPhone scaled down */
+            height: 500px;
+            border-width: 12px;
+            border-radius: 24px;
+        }
+
+        /* Helper text for empty state */
+        .empty-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #888;
+            font-size: 1.2rem;
+        }
+        .has-image .empty-text {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>🖼️ Will it be rendered poorly?</h1>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="image-upload">Upload Image:</label>
+            <input type="file" id="image-upload" accept="image/*">
+        </div>
+
+        <div class="control-group">
+            <label for="bg-size">Background Size:</label>
+            <select id="bg-size">
+                <option value="cover" selected>Cover (Fills area, crops)</option>
+                <option value="contain">Contain (No crop, leaves space)</option>
+                <option value="100% 100%">100% 100% (Stretches)</option>
+                <option value="auto">Auto (Original size)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="bg-position">Background Position:</label>
+            <select id="bg-position">
+                <option value="center" selected>Center</option>
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+                <option value="center top">Center Top</option>
+                <option value="center bottom">Center Bottom</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label for="bg-repeat">Background Repeat:</label>
+            <select id="bg-repeat">
+                <option value="no-repeat" selected>No Repeat</option>
+                <option value="repeat">Repeat</option>
+                <option value="repeat-x">Repeat X</option>
+                <option value="repeat-y">Repeat Y</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="previews-container">
+        <!-- Desktop -->
+        <div class="device-wrapper">
+            <div class="device-label">Desktop (16:9)</div>
+            <div class="screen desktop" id="screen-desktop">
+                <div class="empty-text">No Image</div>
+            </div>
+        </div>
+
+        <!-- Tablet -->
+        <div class="device-wrapper">
+            <div class="device-label">Tablet Portrait</div>
+            <div class="screen tablet" id="screen-tablet">
+                <div class="empty-text">No Image</div>
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="device-wrapper">
+            <div class="device-label">Phone</div>
+            <div class="screen phone" id="screen-phone">
+                <div class="empty-text">No Image</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const fileInput = document.getElementById('image-upload');
+        const sizeSelect = document.getElementById('bg-size');
+        const posSelect = document.getElementById('bg-position');
+        const repeatSelect = document.getElementById('bg-repeat');
+        const screens = document.querySelectorAll('.screen');
+
+        let currentImageUrl = '';
+
+        // Handle Image Upload
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Use FileReader to create a local URL for the uploaded image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentImageUrl = `url(${e.target.result})`;
+                    
+                    // Remove empty state text
+                    screens.forEach(screen => screen.classList.add('has-image'));
+                    
+                    applyStyles();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Function to apply CSS background properties to all screens
+        function applyStyles() {
+            if (!currentImageUrl) return;
+
+            const size = sizeSelect.value;
+            const position = posSelect.value;
+            const repeat = repeatSelect.value;
+
+            screens.forEach(screen => {
+                screen.style.backgroundImage = currentImageUrl;
+                screen.style.backgroundSize = size;
+                screen.style.backgroundPosition = position;
+                screen.style.backgroundRepeat = repeat;
+            });
+        }
+
+        // Listen for changes on all select dropdowns
+        sizeSelect.addEventListener('change', applyStyles);
+        posSelect.addEventListener('change', applyStyles);
+        repeatSelect.addEventListener('change', applyStyles);
+    </script>
+</body>
+</html>
