@@ -47,6 +47,14 @@
                 </div>
 
                 <div class="control-group">
+                    <label for="bg-attachment">Background Attachment:</label>
+                    <select id="bg-attachment">
+                        <option value="scroll" selected>Scroll</option>
+                        <option value="fixed">Fixed</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
                     <label for="bg-repeat">Background Repeat:</label>
                     <select id="bg-repeat">
                         <option value="no-repeat" selected>No Repeat</option>
@@ -124,6 +132,7 @@
             const fileInput = document.getElementById("image-upload");
             const sizeSelect = document.getElementById("bg-size");
             const posSelect = document.getElementById("bg-position");
+            const attachmentSelect = document.getElementById("bg-attachment");
             const repeatSelect = document.getElementById("bg-repeat");
             const screens = document.querySelectorAll(".screen"); // Captures presets AND custom screen
 
@@ -148,18 +157,21 @@
                 if (!currentImageUrl) return;
                 const size = sizeSelect.value;
                 const position = posSelect.value;
+                const attachment = attachmentSelect.value;
                 const repeat = repeatSelect.value;
 
                 screens.forEach((screen) => {
                     screen.style.backgroundImage = currentImageUrl;
                     screen.style.backgroundSize = size;
                     screen.style.backgroundPosition = position;
+                    screen.style.backgroundAttachment = attachment;
                     screen.style.backgroundRepeat = repeat;
                 });
             }
 
             sizeSelect.addEventListener("change", applyStyles);
             posSelect.addEventListener("change", applyStyles);
+            attachmentSelect.addEventListener("change", applyStyles);
             repeatSelect.addEventListener("change", applyStyles);
 
             // --- 2. Tab Switching & Sidebar Logic ---
