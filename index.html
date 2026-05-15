@@ -7,7 +7,10 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>SVUS</h1>
+        <h1>
+            SVUS
+            <button id="sidebar-toggle" class="sidebar-toggle-btn">☰</button>
+        </h1>
 
         <div class="app-layout">
             <!-- Sidebar: Global Controls -->
@@ -213,6 +216,15 @@
                         customControls.style.display = "none";
                     }
                 });
+            });
+
+            // --- Sidebar Toggle Logic ---
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            const sidebar = document.querySelector(".sidebar");
+
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                sidebarToggle.textContent = sidebar.classList.contains("collapsed") ? "☰" : "✕";
             });
 
             // --- 3. Custom Canvas Sizing Logic ---
