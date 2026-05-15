@@ -156,7 +156,6 @@
             function updateControlState() {
                 const fixedAttachment = attachmentSelect.value === "fixed";
                 sizeSelect.disabled = fixedAttachment;
-                posSelect.disabled = fixedAttachment;
                 repeatSelect.disabled = fixedAttachment;
             }
 
@@ -173,7 +172,7 @@
                     screen.style.backgroundImage = currentImageUrl;
                     screen.style.backgroundAttachment = attachment;
                     screen.style.backgroundSize = fixedAttachment ? "" : size;
-                    screen.style.backgroundPosition = fixedAttachment ? "" : position;
+                    screen.style.backgroundPosition = position;
                     screen.style.backgroundRepeat = fixedAttachment ? "" : repeat;
                 });
             }
