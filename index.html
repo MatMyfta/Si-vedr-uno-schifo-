@@ -153,19 +153,28 @@
                 }
             });
 
+            function updateControlState() {
+                const fixedAttachment = attachmentSelect.value === "fixed";
+                sizeSelect.disabled = fixedAttachment;
+                posSelect.disabled = fixedAttachment;
+                repeatSelect.disabled = fixedAttachment;
+            }
+
             function applyStyles() {
+                updateControlState();
                 if (!currentImageUrl) return;
                 const size = sizeSelect.value;
                 const position = posSelect.value;
                 const attachment = attachmentSelect.value;
                 const repeat = repeatSelect.value;
+                const fixedAttachment = attachment === "fixed";
 
                 screens.forEach((screen) => {
                     screen.style.backgroundImage = currentImageUrl;
-                    screen.style.backgroundSize = size;
-                    screen.style.backgroundPosition = position;
                     screen.style.backgroundAttachment = attachment;
-                    screen.style.backgroundRepeat = repeat;
+                    screen.style.backgroundSize = fixedAttachment ? "" : size;
+                    screen.style.backgroundPosition = fixedAttachment ? "" : position;
+                    screen.style.backgroundRepeat = fixedAttachment ? "" : repeat;
                 });
             }
 
@@ -173,6 +182,9 @@
             posSelect.addEventListener("change", applyStyles);
             attachmentSelect.addEventListener("change", applyStyles);
             repeatSelect.addEventListener("change", applyStyles);
+
+            // initialize control state
+            updateControlState();
 
             // --- 2. Tab Switching & Sidebar Logic ---
             const tabBtns = document.querySelectorAll(".tab-btn");
