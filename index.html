@@ -52,6 +52,9 @@
                         <option value="scroll" selected>Scroll</option>
                         <option value="fixed">Fixed</option>
                     </select>
+                    <div id="position-note" class="control-note" style="display: none;">
+                        When attachment is fixed, size and repeat are disabled because the image is pinned to the viewport, but position still applies.
+                    </div>
                 </div>
 
                 <div class="control-group">
@@ -134,6 +137,7 @@
             const posSelect = document.getElementById("bg-position");
             const attachmentSelect = document.getElementById("bg-attachment");
             const repeatSelect = document.getElementById("bg-repeat");
+            const positionNote = document.getElementById("position-note");
             const screens = document.querySelectorAll(".screen"); // Captures presets AND custom screen
 
             let currentImageUrl = "";
@@ -157,6 +161,7 @@
                 const fixedAttachment = attachmentSelect.value === "fixed";
                 sizeSelect.disabled = fixedAttachment;
                 repeatSelect.disabled = fixedAttachment;
+                positionNote.style.display = fixedAttachment ? "block" : "none";
             }
 
             function applyStyles() {

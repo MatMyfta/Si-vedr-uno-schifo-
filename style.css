@@ -90,6 +90,17 @@ input[type="text"] {
 	width: 100%;
 }
 
+select:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+}
+
+.control-note {
+	font-size: 0.85rem;
+	color: #555;
+	margin-top: 6px;
+}
+
 /* Hidden by default, toggled via JS */
 #custom-controls {
 	display: none;
