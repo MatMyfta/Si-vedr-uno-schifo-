@@ -15,6 +15,16 @@
         <div class="app-layout">
             <!-- Sidebar: Global Controls -->
             <aside class="sidebar">
+                <!-- Button Group for Tabs -->
+                <div class="btngroup">
+                    <button class="tab-btn active" data-tab="presets">
+                        Standard Presets
+                    </button>
+                    <button class="tab-btn" data-tab="custom">
+                        Custom Canvas
+                    </button>
+                </div>
+
                 <div class="control-group">
                     <label for="image-upload">Upload Image:</label>
                     <input type="file" id="image-upload" accept="image/*" />
@@ -85,16 +95,6 @@
 
             <!-- Main Content Area: Tabs & Previews -->
             <main class="main-content">
-                <!-- Tab Navigation -->
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="presets">
-                        Standard Presets
-                    </button>
-                    <button class="tab-btn" data-tab="custom">
-                        Custom Canvas
-                    </button>
-                </div>
-
                 <!-- TAB 1: Standard Presets -->
                 <div id="tab-presets" class="tab-content active">
                     <div class="previews-container">
